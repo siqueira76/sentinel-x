@@ -20,7 +20,7 @@ Responsável pelas entidades centrais, invariantes, value objects e conceitos do
 
 ### Infrastructure
 
-Responsável por acesso a banco, storage de evidências, webhooks, segurança, observabilidade e configurações técnicas.
+Responsável por acesso a banco, autenticação, observabilidade, integrações externas e, em fases posteriores, storage de evidências e webhooks.
 
 ## Organização sugerida de pacotes
 
@@ -30,37 +30,49 @@ Responsável por acesso a banco, storage de evidências, webhooks, segurança, o
 - `infrastructure`
 - `shared`
 
-## Módulos funcionais sugeridos
+## Módulos funcionais por horizonte
 
+### MVP
+
+- `agent`
 - `camera`
 - `event`
+
+### Evolução posterior
+
 - `evidence`
 - `watchlist`
 - `alert`
 - `analytics`
 
-## Fluxo principal de ingestão
+## Fluxo de ingestão do MVP
 
 1. Agent envia evento autenticado;
-2. API valida o payload;
-3. camada de aplicação verifica idempotência;
-4. domínio normaliza e enriquece o evento;
-5. persistência grava dados estruturados;
-6. storage registra ou referencia a evidência;
-7. regras de watchlist/alerta são avaliadas;
-8. resposta de aceitação é retornada ao Agent.
+2. API valida payload e credenciais;
+3. camada de aplicação resolve a identidade do `Agent` e da `Camera` lógica;
+4. idempotência é verificada por chave explícita ou pela composição entre `agentId` e `eventId`;
+5. domínio normaliza e enriquece o evento com metadados mínimos;
+6. persistência grava `VehicleEvent` e referência opcional de evidência;
+7. resposta retorna aceitação ou duplicidade ao Agent.
 
-## Fluxo principal de consulta
+## Fluxo de consulta do MVP
 
-1. consumidor autenticado envia consulta;
+1. consumidor administrativo autenticado envia consulta;
 2. API valida filtros e paginação;
-3. camada de aplicação busca dados e agregações;
-4. resposta retorna formato estável para dashboard ou Brain.
+3. camada de aplicação busca dados históricos estruturados;
+4. resposta retorna formato estável para operação e integração futura.
+
+## Fluxo alvo de evolução posterior
+
+1. storage externo recebe ou referencia evidências completas;
+2. regras de watchlist e alerta são avaliadas durante ou logo após a ingestão;
+3. reconciliação de falhas de evidência é executada quando necessário;
+4. agregações analíticas e integrações externas passam a consumir contratos dedicados.
 
 ## Decisões arquiteturais iniciais
 
 - REST como interface inicial;
-- banco relacional como fonte principal de verdade;
-- evidências fora do banco, com referência persistida no Core;
+- PostgreSQL como fonte principal de verdade no MVP;
+- evidências fora do banco, com referência persistida no Core quando fornecida;
 - versionamento explícito da API;
 - componentes internos preparados para futura extração por módulo.

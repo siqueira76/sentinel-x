@@ -6,17 +6,22 @@ Definir como o Sentinel-Core deve persistir dados estruturados e referências de
 
 ## Banco principal
 
-Uso previsto de `PostgreSQL` com `TimescaleDB` para consultas históricas e agregações temporais.
+### MVP
+
+Uso previsto de `PostgreSQL` como banco relacional principal.
+
+### Evolução posterior
+
+`TimescaleDB` pode ser adotado quando agregações temporais e volume histórico justificarem a extensão.
 
 ## O que deve ir para o banco relacional
 
 - eventos de leitura e detecção;
 - cadastro de câmeras;
 - Agents conhecidos;
-- listas de interesse;
-- alertas gerados;
-- ponteiros para evidências;
-- trilhas de auditoria relevantes.
+- ponteiros opcionais para evidências;
+- trilhas mínimas de auditoria e rejeição;
+- listas de interesse e alertas em fases posteriores.
 
 ## O que não deve ir diretamente para o banco
 
@@ -26,13 +31,20 @@ Uso previsto de `PostgreSQL` com `TimescaleDB` para consultas históricas e agre
 
 ## Evidências
 
-Estratégia sugerida:
+### MVP
+
+- aceitar apenas referência de evidência no payload;
+- persistir no banco somente chave, hash, tipo, tamanho e vínculo com evento quando informados;
+- não depender de upload binário para aceitar o evento.
+
+### Evolução posterior
+
 - armazenar arquivo em storage compatível com S3;
-- persistir no banco apenas chave, hash, tipo, tamanho e vínculo com evento.
+- suportar reconciliação de falhas entre persistência do evento e disponibilidade da evidência.
 
 ## Idempotência
 
-O modelo deve suportar deduplicação por uma chave de ingestão composta ou explícita, evitando eventos repetidos vindos do Agent.
+O modelo deve suportar deduplicação por chave explícita `idempotencyKey` ou, na ausência dela, pela combinação entre `agentId` e `eventId`, evitando eventos repetidos vindos do Agent.
 
 ## Migrações
 
@@ -57,5 +69,6 @@ Políticas a definir futuramente:
 O Core deve permitir responder:
 - quantos eventos foram ingeridos;
 - quantos foram descartados como duplicados;
-- quantas evidências falharam;
+- quantos foram rejeitados por autenticação ou validação;
+- quantas referências de evidência chegaram inválidas;
 - quanto tempo a persistência levou por operação.

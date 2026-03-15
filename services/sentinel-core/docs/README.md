@@ -20,9 +20,16 @@ Esta pasta concentra a especificação funcional e técnica do `Sentinel-Core` p
 - orientar a criação de pacotes, entidades, APIs e integrações;
 - permitir backlog e execução incremental do projeto.
 
+## Convenções desta documentação
+
+- `MVP`, `primeiro ciclo` e `primeiro incremento` referem-se ao escopo inicial previsto nas fases 1 a 3 do roadmap;
+- `evolução posterior` refere-se às capacidades previstas para as fases 4 a 6;
+- quando arquitetura e domínio descreverem módulos futuros, isso representa a arquitetura-alvo do Core, e não obrigação do primeiro incremento;
+- contratos e decisões operacionais do MVP têm precedência sobre descrições mais amplas de visão futura.
+
 ## Estado atual
 
 - projeto Spring Boot criado;
 - sem implementação de domínio;
 - sem modelo de dados definitivo;
-- documentação pronta para orientar a próxima fase.
+- documentação revisada para orientar a próxima fase com foco em MVP e evolução incremental.

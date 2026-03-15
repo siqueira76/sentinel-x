@@ -1,14 +1,26 @@
 # Modelo de Domínio Inicial
 
-## Entidades centrais
+## Entidades centrais do MVP
 
-### Camera
+### Agent
 
-Representa um ponto de captura físico ou lógico.
+Representa a origem lógica autorizada a enviar eventos ao Core.
 
 Campos esperados:
 - identificador interno;
-- identificador do Agent de origem;
+- identificador externo estável `agentId`;
+- status operacional;
+- referência de credencial ou política de autenticação;
+- metadados técnicos relevantes.
+
+### Camera
+
+Representa um ponto de captura físico ou lógico vinculado a um `Agent`.
+
+Campos esperados:
+- identificador interno;
+- identificador lógico `cameraId` no contexto do Agent;
+- vínculo com o `Agent` de origem;
 - nome amigável;
 - localização;
 - status operacional;
@@ -19,20 +31,23 @@ Campos esperados:
 Representa um evento individual de leitura ou detecção relacionado a veículo.
 
 Campos esperados:
-- identificador do evento;
+- identificador interno `id` do Core;
+- identificador externo `eventId` enviado pelo Agent;
 - timestamp do evento;
 - câmera de origem;
 - placa lida;
 - confiança da leitura;
 - tipo do evento;
 - direção ou sentido, quando houver;
-- referência da evidência;
+- referência opcional da evidência;
 - origem do Agent;
-- chave de idempotência.
+- chave de idempotência explícita, quando fornecida.
+
+## Entidades de evolução posterior
 
 ### Evidence
 
-Representa a evidência visual associada a um evento.
+Representa o ciclo de vida completo da evidência visual associada a um evento quando houver integração plena com storage.
 
 Campos esperados:
 - identificador da evidência;
@@ -40,7 +55,8 @@ Campos esperados:
 - caminho ou chave no storage;
 - hash do arquivo, quando aplicável;
 - metadados visuais básicos;
-- vínculo com o evento.
+- vínculo com o evento;
+- status de reconciliação ou disponibilidade.
 
 ### WatchlistEntry
 
@@ -71,8 +87,8 @@ Campos esperados:
 ## Agregados iniciais
 
 - `VehicleEvent` como centro da trilha operacional;
-- `Camera` como referência de contexto;
-- `WatchlistEntry` e `Alert` como ciclo de regra e resposta.
+- `Agent` e `Camera` como referência de origem e contexto;
+- `WatchlistEntry` e `Alert` como evolução posterior do ciclo de regra e resposta.
 
 ## Value objects sugeridos
 
@@ -81,11 +97,12 @@ Campos esperados:
 - `ConfidenceScore`
 - `TimeWindow`
 - `EvidencePointer`
+- `IdempotencyKey`
 
 ## Regras de domínio iniciais
 
-- um evento deve ser rastreável até uma câmera e um Agent;
-- ingestão deve ser idempotente por chave definida;
-- evidência não deve ser perdida ao persistir o evento;
-- placas de interesse devem ser comparadas no momento da ingestão ou logo após;
-- consultas históricas devem preservar ordem temporal consistente.
+- um evento deve ser rastreável até um `Agent` autorizado e uma `Camera` lógica;
+- ingestão deve ser idempotente por chave explícita ou pela composição entre `agentId` e `eventId`;
+- referência de evidência é opcional no MVP, mas não pode ser dissociada do evento quando informada;
+- consultas históricas devem preservar ordem temporal consistente;
+- watchlists, alertas e ciclo completo de evidência entram na evolução posterior.

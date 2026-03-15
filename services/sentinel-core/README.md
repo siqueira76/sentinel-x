@@ -6,8 +6,8 @@ Projeto Spring Boot responsável pelo backend central do ecossistema Sentinel-X.
 
 - receber eventos enviados pelos Agents;
 - armazenar histórico de fluxo e leitura de placas;
-- persistir evidências visuais;
-- expor APIs para operação, dashboard e Sentinel-Brain.
+- persistir referências de evidência quando disponíveis;
+- expor APIs para operação e evolução futura para dashboards e Sentinel-Brain.
 
 ## Stack inicial
 
@@ -41,4 +41,4 @@ Projeto Spring Boot responsável pelo backend central do ecossistema Sentinel-X.
 
 ## Observação
 
-As auto-configurações de banco e migração foram temporariamente desabilitadas para permitir a evolução incremental do projeto antes da definição do modelo de dados e das credenciais de infraestrutura.
+As auto-configurações de banco e migração foram temporariamente desabilitadas para permitir a evolução incremental do projeto antes da definição do modelo de dados e das credenciais de infraestrutura. A documentação do módulo agora diferencia explicitamente o MVP das capacidades previstas para fases posteriores.
