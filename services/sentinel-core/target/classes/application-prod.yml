@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${SENTINEL_DATASOURCE_URL}
+    username: ${SENTINEL_DATASOURCE_USERNAME}
+    password: ${SENTINEL_DATASOURCE_PASSWORD}
+
+sentinel:
+  security:
+    agent:
+      api-key: ${SENTINEL_AGENT_API_KEY}
+    admin:
+      username: ${SENTINEL_ADMIN_USERNAME}
+      password: ${SENTINEL_ADMIN_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    root: WARN
+    br.com.sentinelx.core: INFO

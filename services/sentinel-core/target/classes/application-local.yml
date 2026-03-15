@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: ${SENTINEL_DATASOURCE_URL:jdbc:postgresql://localhost:5432/sentinel_core}
+    username: ${SENTINEL_DATASOURCE_USERNAME:sentinel}
+    password: ${SENTINEL_DATASOURCE_PASSWORD:sentinel}
+
+sentinel:
+  security:
+    agent:
+      api-key: ${SENTINEL_AGENT_API_KEY:change-me-agent-key}
+    admin:
+      username: ${SENTINEL_ADMIN_USERNAME:admin}
+      password: ${SENTINEL_ADMIN_PASSWORD:change-me-admin-password}
+
+logging:
+  level:
+    root: INFO
+    br.com.sentinelx.core: DEBUG

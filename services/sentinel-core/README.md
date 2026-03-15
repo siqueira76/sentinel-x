@@ -41,4 +41,25 @@ Projeto Spring Boot responsável pelo backend central do ecossistema Sentinel-X.
 
 ## Observação
 
-As auto-configurações de banco e migração foram temporariamente desabilitadas para permitir a evolução incremental do projeto antes da definição do modelo de dados e das credenciais de infraestrutura. A documentação do módulo agora diferencia explicitamente o MVP das capacidades previstas para fases posteriores.
+As configurações do módulo foram separadas por perfil para facilitar o uso local na IDEA e endurecer a configuração em ambientes controlados.
+
+## Perfis de configuração
+
+- `local`: desenvolvimento local, com defaults convenientes para PostgreSQL em `localhost`;
+- `dev`: ambiente controlado de desenvolvimento/homologação, dependente de variáveis de ambiente;
+- `prod`: produção, dependente de variáveis de ambiente e logging mais conservador.
+
+## Execução local pela IDEA
+
+1. suba apenas o PostgreSQL com `docker compose up -d` em `services/sentinel-core`;
+2. configure o profile ativo como `local`;
+3. rode a aplicação pela IDEA.
+
+Variáveis mais comuns no profile `local`:
+- `SPRING_PROFILES_ACTIVE=local`
+- `SENTINEL_DATASOURCE_URL=jdbc:postgresql://localhost:5432/sentinel_core`
+- `SENTINEL_DATASOURCE_USERNAME=sentinel`
+- `SENTINEL_DATASOURCE_PASSWORD=sentinel`
+- `SENTINEL_AGENT_API_KEY=change-me-agent-key`
+- `SENTINEL_ADMIN_USERNAME=admin`
+- `SENTINEL_ADMIN_PASSWORD=change-me-admin-password`
