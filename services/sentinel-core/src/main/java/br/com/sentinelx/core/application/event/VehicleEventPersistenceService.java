@@ -8,12 +8,10 @@ import br.com.sentinelx.core.infrastructure.persistence.AgentRepository;
 import br.com.sentinelx.core.infrastructure.persistence.CameraRepository;
 import br.com.sentinelx.core.infrastructure.persistence.VehicleEventRepository;
 import java.util.Optional;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@ConditionalOnBean({AgentRepository.class, CameraRepository.class, VehicleEventRepository.class})
 public class VehicleEventPersistenceService {
 
     private final AgentRepository agentRepository;

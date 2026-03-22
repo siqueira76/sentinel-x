@@ -157,4 +157,8 @@ public class VehicleEvent {
     public String getMetadataJson() {
         return metadataJson;
     }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

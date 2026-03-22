@@ -1,5 +1,7 @@
 package br.com.sentinelx.core.infrastructure.config;
 
+import br.com.sentinelx.core.application.event.VehicleEventPersistenceService;
+import br.com.sentinelx.core.application.event.VehicleEventQueryService;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +33,28 @@ class SecurityConfigIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private VehicleEventPersistenceService vehicleEventPersistenceService;
+
+    @MockBean
+    private VehicleEventQueryService vehicleEventQueryService;
+
     @Test
     void shouldExposeHealthWithoutAuthentication() throws Exception {
         mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldExposeOpenApiDocsWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.openapi").exists());
+    }
+
+    @Test
+    void shouldExposeSwaggerUiWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/swagger-ui/index.html"))
                 .andExpect(status().isOk());
     }
 

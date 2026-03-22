@@ -1,5 +1,6 @@
 package br.com.sentinelx.core.api.exception;
 
+import br.com.sentinelx.core.application.event.VehicleEventNotFoundException;
 import br.com.sentinelx.core.shared.error.ApiErrorResponse;
 import br.com.sentinelx.core.shared.error.ApiFieldError;
 import br.com.sentinelx.core.shared.error.ErrorCode;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -68,6 +70,38 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST,
                         ErrorCode.MALFORMED_REQUEST,
                         "Request body is missing or malformed.",
+                        request.getRequestURI(),
+                        List.of()
+                ));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException exception,
+            HttpServletRequest request
+    ) {
+        String parameter = exception.getName() == null ? "parameter" : exception.getName();
+
+        return ResponseEntity.badRequest()
+                .body(ApiErrorResponse.of(
+                        HttpStatus.BAD_REQUEST,
+                        ErrorCode.INVALID_REQUEST,
+                        "Invalid value for parameter '" + parameter + "'.",
+                        request.getRequestURI(),
+                        List.of()
+                ));
+    }
+
+    @ExceptionHandler(VehicleEventNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleVehicleEventNotFound(
+            VehicleEventNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiErrorResponse.of(
+                        HttpStatus.NOT_FOUND,
+                        ErrorCode.NOT_FOUND,
+                        exception.getMessage(),
                         request.getRequestURI(),
                         List.of()
                 ));
